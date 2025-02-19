@@ -40,6 +40,7 @@ dependencies:
   google_fonts: ^6.2.1
   dart_periphery: ^0.9.15
   window_manager: ^0.4.3
+  mqtt_client: ^10.5.1
 
 dev_dependencies:
   flutter_test:

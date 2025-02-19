@@ -1,6 +1,6 @@
-// import 'package:flutter/foundation.dart';
-// import 'package:udemy_led_demo/bloc/cubits/flash_cubit/flash_cubit.dart';
+
 import 'package:udemy_mqtt_demo/models/device_state_model.dart';
+import 'package:udemy_mqtt_demo/services/mqtt_service.dart';
 
 class DataRepository {
   DeviceStateModel _deviceState = DeviceStateModel(
@@ -14,14 +14,19 @@ class DataRepository {
     toggleDeviceState: false,
   );
 
-  DataRepository();
+  late MqttService mqttService;
+
+  DataRepository() {
+    mqttService = MqttService(this);
+    mqttService.connect();
+  }
 
   // Getter for current device state
   DeviceStateModel get deviceState => _deviceState;
 
-  // Update state with a new model (used by Cubits)
+  // Update state with a new model and send to MQTT
   void updateDeviceState(DeviceStateModel newState) {
     _deviceState = newState;
-    // debugPrint('Updated DeviceStateModel: ${_deviceState.toJson()}');
+    mqttService.publishDeviceState(newState);
   }
 }

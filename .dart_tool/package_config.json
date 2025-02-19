@@ -32,6 +32,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "charcode",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/charcode-1.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "clock",
       "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/clock-1.1.1",
       "packageUri": "lib/",
@@ -50,6 +56,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "csslib",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/csslib-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "cupertino_icons",
       "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.8",
       "packageUri": "lib/",
@@ -64,6 +76,12 @@
     {
       "name": "equatable",
       "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/equatable-2.0.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "event_bus",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/event_bus-2.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -114,6 +132,12 @@
       "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/google_fonts-6.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.14"
+    },
+    {
+      "name": "html",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/html-0.15.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
     },
     {
       "name": "http",
@@ -174,6 +198,12 @@
       "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/meta-1.15.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "mqtt_client",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/mqtt_client-10.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "nested",
@@ -332,6 +362,18 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "universal_html",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/universal_html-2.2.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "universal_io",
+      "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/universal_io-2.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///home/bob/.pub-cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -368,7 +410,7 @@
       "languageVersion": "3.6"
     }
   ],
-  "generated": "2025-02-19T18:24:45.673411Z",
+  "generated": "2025-02-19T18:36:42.487733Z",
   "generator": "pub",
   "generatorVersion": "3.6.2",
   "flutterRoot": "file:///home/bob/snap/flutter/common/flutter",
