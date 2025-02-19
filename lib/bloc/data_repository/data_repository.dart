@@ -25,14 +25,18 @@ class DataRepository extends ChangeNotifier {
   DeviceStateModel get deviceState => _deviceState;
 
   // Update state and notify Cubits
-void updateDeviceState(DeviceStateModel newState, {bool publish = true}) {
-  _deviceState = newState;
+  void updateDeviceState(DeviceStateModel newState, {bool publish = true}) {
+    // Prevent unnecessary updates
+    if (_deviceState == newState) {
+      return;
+    }
 
-  if (publish) {
-    mqttService.publishDeviceState(newState);
+    _deviceState = newState;
+
+    if (publish) {
+      mqttService.publishDeviceState(newState);
+    }
+
+    notifyListeners();
   }
-
-  notifyListeners();
-}
-
 }
