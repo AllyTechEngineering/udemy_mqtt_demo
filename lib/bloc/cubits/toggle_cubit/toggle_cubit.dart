@@ -8,10 +8,16 @@ part 'toggle_state.dart';
 class ToggleCubit extends Cubit<ToggleState> {
   final GpioService _gpioService;
   final DataRepository _dataRepository;
+
   ToggleCubit(this._dataRepository, this._gpioService)
       : super(ToggleState(
           toggleDeviceState: _dataRepository.deviceState.toggleDeviceState,
-        ));
+        )) {
+    // Listen for repository changes and update state
+    _dataRepository.addListener(_onRepositoryChange);
+  }
+
+  // Toggle state manually when user interacts
   void updateDeviceState() {
     final newState = !_dataRepository.deviceState.toggleDeviceState;
     final updatedState =
@@ -19,5 +25,20 @@ class ToggleCubit extends Cubit<ToggleState> {
     _dataRepository.updateDeviceState(updatedState);
     _gpioService.newToggleDeviceState();
     emit(state.copyWith(toggleDeviceState: newState));
+  }
+
+  // Listen for MQTT changes in DataRepository
+  void _onRepositoryChange() {
+    final newState = _dataRepository.deviceState.toggleDeviceState;
+    if (newState != state.toggleDeviceState) {
+      _gpioService.newToggleDeviceState();
+      emit(state.copyWith(toggleDeviceState: newState));
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _dataRepository.removeListener(_onRepositoryChange);
+    return super.close();
   }
 }

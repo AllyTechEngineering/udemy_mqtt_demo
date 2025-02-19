@@ -60,17 +60,34 @@ class DeviceStateModel extends Equatable {
 
   // Create from JSON (for MQTT receiving)
   factory DeviceStateModel.fromJson(Map<String, dynamic> json) {
-    return DeviceStateModel(
-      pwmDutyCycle: json["pwmDutyCycle"],
-      pwmOn: json["pwmOn"],
-      flashRate: json["flashRate"],
-      flashOn: json["flashOn"],
-      timerStart: DateTime.parse(json["timerStart"]),
-      timerEnd: DateTime.parse(json["timerEnd"]),
-      gpioSensorState: json["gpioSensorState"],
-      toggleDeviceState: json["toggleDeviceState"],
-    );
-  }
+  return DeviceStateModel(
+    pwmDutyCycle: json["pwmDutyCycle"] ?? 0, // Default to 0 if null
+    pwmOn: json["pwmOn"] ?? false, // Default to false if null
+    flashRate: json["flashRate"] ?? 0, // Default to 0 if null
+    flashOn: json["flashOn"] ?? false, // Default to false if null
+    timerStart: json["timerStart"] != null
+        ? DateTime.parse(json["timerStart"])
+        : DateTime.now(), // Default to current time if null
+    timerEnd: json["timerEnd"] != null
+        ? DateTime.parse(json["timerEnd"])
+        : DateTime.now().add(const Duration(minutes: 1)), // Default +1 min
+    gpioSensorState: json["gpioSensorState"] ?? false, // Default to false
+    toggleDeviceState: json["toggleDeviceState"] ?? false, // Default to false
+  );
+}
+
+  // factory DeviceStateModel.fromJson(Map<String, dynamic> json) {
+  //   return DeviceStateModel(
+  //     pwmDutyCycle: json["pwmDutyCycle"],
+  //     pwmOn: json["pwmOn"],
+  //     flashRate: json["flashRate"],
+  //     flashOn: json["flashOn"],
+  //     timerStart: DateTime.parse(json["timerStart"]),
+  //     timerEnd: DateTime.parse(json["timerEnd"]),
+  //     gpioSensorState: json["gpioSensorState"],
+  //     toggleDeviceState: json["toggleDeviceState"],
+  //   );
+  // }
 
   @override
   List<Object> get props => [

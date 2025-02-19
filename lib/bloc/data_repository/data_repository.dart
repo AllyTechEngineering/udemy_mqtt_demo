@@ -1,8 +1,8 @@
-
+import 'package:flutter/foundation.dart';
 import 'package:udemy_mqtt_demo/models/device_state_model.dart';
 import 'package:udemy_mqtt_demo/services/mqtt_service.dart';
 
-class DataRepository {
+class DataRepository extends ChangeNotifier {
   DeviceStateModel _deviceState = DeviceStateModel(
     pwmDutyCycle: 0,
     pwmOn: true,
@@ -24,9 +24,15 @@ class DataRepository {
   // Getter for current device state
   DeviceStateModel get deviceState => _deviceState;
 
-  // Update state with a new model and send to MQTT
-  void updateDeviceState(DeviceStateModel newState) {
-    _deviceState = newState;
+  // Update state and notify Cubits
+void updateDeviceState(DeviceStateModel newState, {bool publish = true}) {
+  _deviceState = newState;
+
+  if (publish) {
     mqttService.publishDeviceState(newState);
   }
+
+  notifyListeners();
+}
+
 }

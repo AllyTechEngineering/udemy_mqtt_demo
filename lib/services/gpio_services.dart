@@ -116,10 +116,10 @@ class GpioService {
 
   // GPIO Output Control
   void newToggleDeviceState() {
-    debugPrint('First state ${_gpioStates["toggleDeviceState"]}');
+    // debugPrint('First state ${_gpioStates["toggleDeviceState"]}');
     final bool newState = toggleDeviceState;
     setState("toggleDeviceState", newState);
-       debugPrint('First state $newState');
+       debugPrint('Toggle Switch State: $newState');
     gpio5.write(newState);
     setState("toggleDeviceState", !toggleDeviceState);
   }

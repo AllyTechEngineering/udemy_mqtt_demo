@@ -5,7 +5,6 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:udemy_mqtt_demo/bloc/data_repository/data_repository.dart';
 import '../models/device_state_model.dart';
 
-
 class MqttService {
   final String _broker = "192.168.1.202"; // Raspberry Pi IP
   final int _port = 1883;
@@ -32,10 +31,13 @@ class MqttService {
     _client.connectionMessage = MqttConnectMessage()
         .withClientIdentifier(_clientId)
         .authenticateAs(_username, _password)
-        .withWillQos(MqttQos.atLeastOnce);
+        .startClean() // Ensures no old session is retained
+        .withWillQos(MqttQos.atMostOnce);
 
     try {
+      debugPrint('Connecting to MQTT broker...');
       await _client.connect();
+
       if (_client.connectionStatus!.state == MqttConnectionState.connected) {
         debugPrint('Connected to MQTT broker at $_broker');
         _subscribeToTopic();
@@ -44,6 +46,7 @@ class MqttService {
       }
     } catch (e) {
       debugPrint('MQTT Connection error: $e');
+      _reconnect();
     }
   }
 
@@ -51,7 +54,8 @@ class MqttService {
   void _subscribeToTopic() {
     _client.subscribe(_topic, MqttQos.atMostOnce);
     _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
-      final MqttPublishMessage message = messages[0].payload as MqttPublishMessage;
+      final MqttPublishMessage message =
+          messages[0].payload as MqttPublishMessage;
       final String payload =
           MqttPublishPayload.bytesToStringAsString(message.payload.message);
 
@@ -60,19 +64,27 @@ class MqttService {
       try {
         final Map<String, dynamic> jsonData = jsonDecode(payload);
         final newState = DeviceStateModel.fromJson(jsonData);
-        _dataRepository.updateDeviceState(newState);
-        debugPrint("Updated device state from MQTT.");
+
+        // Prevent infinite loop: Only update state if it changed
+        if (newState != _dataRepository.deviceState) {
+          _dataRepository.updateDeviceState(newState,
+              publish: false); // Do NOT publish again
+          debugPrint("Updated device state from MQTT.");
+        } else {
+          debugPrint("Received duplicate state, ignoring update.");
+        }
       } catch (e) {
         debugPrint("Error parsing MQTT data: $e");
       }
     });
   }
 
-  /// Publish DeviceStateModel to MQTT
+  /// Publish DeviceStateModel to MQTT (ensures no duplicate messages)
   void publishDeviceState(DeviceStateModel state) {
     final String jsonState = jsonEncode(state.toJson());
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(jsonState);
+
     _client.publishMessage(_topic, MqttQos.atLeastOnce, builder.payload!);
     debugPrint("Published MQTT data: $jsonState");
   }
@@ -82,10 +94,23 @@ class MqttService {
   }
 
   void _onDisconnected() {
-    debugPrint('MQTT Disconnected.');
+    debugPrint('MQTT Disconnected. Attempting reconnect in 5 seconds...');
+    _reconnect();
   }
 
   void _onSubscribed(String topic) {
     debugPrint('Subscribed to topic: $topic');
+  }
+
+  /// Handles automatic reconnection
+  void _reconnect() {
+    Future.delayed(const Duration(seconds: 5), connect);
+  }
+
+  /// Clears retained messages (Run this once manually if needed)
+  void clearRetainedMessages() {
+    final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
+    _client.publishMessage(_topic, MqttQos.atMostOnce, builder.payload!);
+    debugPrint("Cleared retained MQTT messages.");
   }
 }
