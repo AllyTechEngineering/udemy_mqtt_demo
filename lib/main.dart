@@ -52,7 +52,7 @@ class MyWindowListener extends WindowListener {
     debugPrint("Window close detected, disposing resources...");
     pwmService.dispose();
     gpioService.dispose();
-    windowManager.destroy;
+    windowManager.destroy(); // Call destroy as a function
     exit(0);
   }
 }
@@ -73,24 +73,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        RepositoryProvider(create: (context) => dataRepository),
-        BlocProvider(create: (context) => PwmCubit(dataRepository, pwmService)),
-        BlocProvider(
-            create: (context) => FlashCubit(dataRepository, gpioService)),
-        BlocProvider(
-            create: (context) => TimerCubit(dataRepository, timerService)),
-        BlocProvider(
-            create: (context) => SensorCubit(dataRepository, gpioService)),
-        BlocProvider(
-            create: (context) => ToggleCubit(dataRepository, gpioService)),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'MQTT Demo',
-        theme: CustomAppTheme.appTheme,
-        home: const HomeScreen(),
+    return RepositoryProvider(
+      create: (context) => dataRepository,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => PwmCubit(dataRepository, pwmService)),
+          BlocProvider(create: (context) => FlashCubit(dataRepository, gpioService)),
+          BlocProvider(create: (context) => TimerCubit(dataRepository, timerService)),
+          BlocProvider(create: (context) => SensorCubit(dataRepository, gpioService)),
+          BlocProvider(create: (context) => ToggleCubit(dataRepository, gpioService)),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'MQTT Demo',
+          theme: CustomAppTheme.appTheme,
+          home: const HomeScreen(),
+        ),
       ),
     );
   }
