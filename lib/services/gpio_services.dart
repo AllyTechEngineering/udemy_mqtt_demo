@@ -51,18 +51,21 @@ class GpioService {
       debugPrint('Error initializing gpio22: $e');
     }
     try {
-      gpio16 = GPIO(16, GPIOdirection.gpioDirIn, 0);
-      gpio16.read();
-      // debugPrint('gpio16 Initialized ${gpio16.getGPIOinfo()}');
-    } on Exception catch (e) {
-      debugPrint('Error initializing gpio16: $e');
-    }
-    try {
       gpio27 = GPIO(27, GPIOdirection.gpioDirOut, 0);
       gpio27.write(false);
       // debugPrint('gpio27 Initialized ${gpio27.getGPIOinfo()}');
     } on Exception catch (e) {
       debugPrint('Error initializing gpio27: $e');
+    }
+    try {
+      gpio16 = GPIO(16, GPIOdirection.gpioDirIn, 0);
+      // Read the initial sensor state immediately
+      bool initialInput = gpio16.read();
+      setState("isInputDetected", initialInput);
+      setLedState(initialInput);
+      debugPrint('gpio16 initial state: $initialInput');
+    } on Exception catch (e) {
+      debugPrint('Error initializing gpio16: $e');
     }
   }
 
@@ -79,29 +82,24 @@ class GpioService {
     _gpioStates[key] = value;
   }
 
-  // void checkBuildMode() {
-  //   if (kDebugMode) {
-  //     debugPrint('Running in debug mode');
-  //   } else if (kReleaseMode) {
-  //     debugPrint('Running in release mode');
-  //   } else if (kProfileMode) {
-  //     debugPrint('Running in profile mode');
-  //   }
-  // }
+  Stream<bool> pollInputState() async* {
+    // Read and yield the initial state
+    bool lastState = gpio16.read();
+    setState("isInputDetected", lastState);
+    setLedState(lastState);
+    yield lastState; // Yield the initial state immediately
 
-  // GPIO Input Polling
-  void startInputPolling(Function(bool) onData) {
-    if (isPolling) return;
-    setState("isPolling", true);
-
-    _pollingTimer = Timer.periodic(pollingDuration, (_) {
+    // Continuously poll gpio16 without blocking the main thread
+    while (true) {
+      await Future.delayed(pollingDuration);
       bool newState = gpio16.read();
-      if (newState != isInputDetected) {
+      if (newState != lastState) {
+        lastState = newState;
         setState("isInputDetected", newState);
-        onData(newState);
         setLedState(newState);
+        yield newState;
       }
-    });
+    }
   }
 
   // Sensor input LED control
@@ -119,7 +117,7 @@ class GpioService {
     // debugPrint('First state ${_gpioStates["toggleDeviceState"]}');
     final bool newState = toggleDeviceState;
     setState("toggleDeviceState", newState);
-       debugPrint('Toggle Switch State: $newState');
+    debugPrint('Toggle Switch State: $newState');
     gpio5.write(newState);
     setState("toggleDeviceState", !toggleDeviceState);
   }
