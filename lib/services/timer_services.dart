@@ -18,8 +18,7 @@ class TimerService {
     final now = DateTime.now();
 
     // Cancel any existing timers
-    _startTimer?.cancel();
-    _endTimer?.cancel();
+    _cancelExistingTimers();
 
     if (startTime.isAfter(now)) {
       final startDuration = startTime.difference(now);
@@ -32,6 +31,11 @@ class TimerService {
     } else {
       debugPrint('Start time is in the past. Relay will not be scheduled.');
     }
+  }
+
+  void _cancelExistingTimers() {
+    _startTimer?.cancel();
+    _endTimer?.cancel();
   }
 
   void _scheduleEndTimer(DateTime endTime) {
@@ -49,7 +53,6 @@ class TimerService {
   }
 
   void cancelTimers() {
-    _startTimer?.cancel();
-    _endTimer?.cancel();
+    _cancelExistingTimers();
   }
 }

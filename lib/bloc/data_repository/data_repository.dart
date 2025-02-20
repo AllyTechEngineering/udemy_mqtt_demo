@@ -17,6 +17,10 @@ class DataRepository extends ChangeNotifier {
   late MqttService mqttService;
 
   DataRepository() {
+    _initializeMqttService();
+  }
+
+  void _initializeMqttService() {
     mqttService = MqttService(this);
     mqttService.connect();
   }

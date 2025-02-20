@@ -17,6 +17,10 @@ class MqttService {
   final DataRepository _dataRepository;
 
   MqttService(this._dataRepository) {
+    _initializeClient();
+  }
+
+  void _initializeClient() {
     _client = MqttServerClient(_broker, _clientId);
     _client.port = _port;
     _client.logging(on: false);
@@ -53,30 +57,32 @@ class MqttService {
   /// Subscribe to the topic
   void _subscribeToTopic() {
     _client.subscribe(_topic, MqttQos.atMostOnce);
-    _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
-      final MqttPublishMessage message =
-          messages[0].payload as MqttPublishMessage;
-      final String payload =
-          MqttPublishPayload.bytesToStringAsString(message.payload.message);
+    _client.updates?.listen(_onMessageReceived);
+  }
 
-      debugPrint("Received MQTT message: $payload");
+  void _onMessageReceived(List<MqttReceivedMessage<MqttMessage>> messages) {
+    final MqttPublishMessage message =
+        messages[0].payload as MqttPublishMessage;
+    final String payload =
+        MqttPublishPayload.bytesToStringAsString(message.payload.message);
 
-      try {
-        final Map<String, dynamic> jsonData = jsonDecode(payload);
-        final newState = DeviceStateModel.fromJson(jsonData);
+    debugPrint("Received MQTT message: $payload");
 
-        // Prevent infinite loop: Only update state if it changed
-        if (newState != _dataRepository.deviceState) {
-          _dataRepository.updateDeviceState(newState,
-              publish: false); // Do NOT publish again
-          debugPrint("Updated device state from MQTT.");
-        } else {
-          debugPrint("Received duplicate state, ignoring update.");
-        }
-      } catch (e) {
-        debugPrint("Error parsing MQTT data: $e");
+    try {
+      final Map<String, dynamic> jsonData = jsonDecode(payload);
+      final newState = DeviceStateModel.fromJson(jsonData);
+
+      // Prevent infinite loop: Only update state if it changed
+      if (newState != _dataRepository.deviceState) {
+        _dataRepository.updateDeviceState(newState,
+            publish: false); // Do NOT publish again
+        debugPrint("Updated device state from MQTT.");
+      } else {
+        debugPrint("Received duplicate state, ignoring update.");
       }
-    });
+    } catch (e) {
+      debugPrint("Error parsing MQTT data: $e");
+    }
   }
 
   /// Publish DeviceStateModel to MQTT (ensures no duplicate messages)

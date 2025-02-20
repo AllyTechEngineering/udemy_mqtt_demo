@@ -17,21 +17,26 @@ class PwmService {
   }
 
   PwmService._internal() {
+    _initializePwm();
+  }
+
+  void _initializePwm() {
     try {
       _exportPwm(); // Ensure PWM0 is available before opening it
       pwm0 = PWM(2, 0);
       pwm1 = PWM(2, 1);
-      pwm0.setPeriodNs(10000000);
-      pwm1.setPeriodNs(10000000);
-      pwm0.setDutyCycleNs(0);
-      pwm1.setDutyCycleNs(0);
-      pwm0.enable();
-      pwm1.enable();
-      pwm0.setPolarity(Polarity.pwmPolarityNormal);
-      pwm1.setPolarity(Polarity.pwmPolarityNormal);
+      _configurePwm(pwm0);
+      _configurePwm(pwm1);
     } catch (e) {
       debugPrint('Error initializing PwmService: $e');
     }
+  }
+
+  void _configurePwm(PWM pwm) {
+    pwm.setPeriodNs(10000000);
+    pwm.setDutyCycleNs(0);
+    pwm.enable();
+    pwm.setPolarity(Polarity.pwmPolarityNormal);
   }
 
   /// Ensures PWM is exported before opening it
@@ -72,10 +77,10 @@ class PwmService {
   //Disposal
   // Add all the enabled pwms to the dispose method
   void dispose() {
-    pwm0.disable();
-    pwm1.disable();
-    pwm0.dispose();
-    pwm1.dispose();
+    for (var pwm in [pwm0, pwm1]) {
+      pwm.disable();
+      pwm.dispose();
+    }
     debugPrint('PWM resources released');
   }
 } // End of class PwmService

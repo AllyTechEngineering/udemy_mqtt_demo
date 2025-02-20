@@ -19,7 +19,7 @@ class GpioService {
   // Use a map for managing boolean states
   final Map<String, bool> _gpioStates = {
     "directionState": true, // true = forward, false = backward
-    "toggleDeviceState": true,
+    "toggleDeviceState": false,
     "isInputDetected": false,
     "isPolling": false,
     "currentInputState": false,
@@ -29,43 +29,34 @@ class GpioService {
   factory GpioService() => _instance;
 
   GpioService._internal() {
-    try {
-      gpio5 = GPIO(5, GPIOdirection.gpioDirOut, 0);
-      gpio5.write(false);
-      // debugPrint('gpio5 Initialized ${gpio5.getGPIOinfo()}');
-    } on Exception catch (e) {
-      debugPrint('Error initializing gpio5: $e');
-    }
-    try {
-      gpio6 = GPIO(6, GPIOdirection.gpioDirOut, 0);
-      gpio6.write(false);
-      // debugPrint('gpio6 Initialized ${gpio6.getGPIOinfo()}');
-    } on Exception catch (e) {
-      debugPrint('Error initializing gpio6: $e');
-    }
-    try {
-      gpio22 = GPIO(22, GPIOdirection.gpioDirOut, 0);
-      gpio22.write(false);
-      // debugPrint('gpio22 Initialized ${gpio22.getGPIOinfo()}');
-    } on Exception catch (e) {
-      debugPrint('Error initializing gpio22: $e');
-    }
-    try {
-      gpio27 = GPIO(27, GPIOdirection.gpioDirOut, 0);
-      gpio27.write(false);
-      // debugPrint('gpio27 Initialized ${gpio27.getGPIOinfo()}');
-    } on Exception catch (e) {
-      debugPrint('Error initializing gpio27: $e');
-    }
-    try {
-      gpio16 = GPIO(16, GPIOdirection.gpioDirIn, 0);
-      // Read the initial sensor state immediately
+    _initializeGpios();
+  }
+
+  void _initializeGpios() {
+    _initializeGpio(5, GPIOdirection.gpioDirOut, false, (gpio) => gpio5 = gpio);
+    _initializeGpio(6, GPIOdirection.gpioDirOut, false, (gpio) => gpio6 = gpio);
+    _initializeGpio(22, GPIOdirection.gpioDirOut, false, (gpio) => gpio22 = gpio);
+    _initializeGpio(27, GPIOdirection.gpioDirOut, false, (gpio) => gpio27 = gpio);
+    _initializeGpio(16, GPIOdirection.gpioDirIn, null, (gpio) {
+      gpio16 = gpio;
       bool initialInput = gpio16.read();
       setState("isInputDetected", initialInput);
       setLedState(initialInput);
       debugPrint('gpio16 initial state: $initialInput');
+    });
+  }
+
+  void _initializeGpio(int pin, GPIOdirection direction, bool? initialState,
+      Function(GPIO) assignGpio) {
+    try {
+      GPIO gpio = GPIO(pin, direction, 0);
+      if (initialState != null) {
+        gpio.write(initialState);
+      }
+      assignGpio(gpio);
+      debugPrint('GPIO $pin initialized');
     } on Exception catch (e) {
-      debugPrint('Error initializing gpio16: $e');
+      debugPrint('Error initializing GPIO $pin: $e');
     }
   }
 
@@ -114,12 +105,10 @@ class GpioService {
 
   // GPIO Output Control
   void newToggleDeviceState() {
-    // debugPrint('First state ${_gpioStates["toggleDeviceState"]}');
-    final bool newState = toggleDeviceState;
+    final bool newState = !toggleDeviceState; // Toggle the state
     setState("toggleDeviceState", newState);
     debugPrint('Toggle Switch State: $newState');
     gpio5.write(newState);
-    setState("toggleDeviceState", !toggleDeviceState);
   }
 
   void setRelayState(bool state) {
@@ -144,11 +133,11 @@ class GpioService {
 
   void updateDeviceFlashRate(int newFlashRate) {
     flashRate = newFlashRate;
+    _flashTimer?.cancel(); // Cancel any existing timer
+
     if (newFlashRate == 0 || !isFlashing) {
-      _flashTimer?.cancel();
-      gpio22.write(false);
+      gpio22.write(false); // Ensure LED is off if not flashing
     } else {
-      _flashTimer?.cancel();
       _flashTimer = Timer.periodic(Duration(milliseconds: flashRate), (_) {
         gpio22.write(!gpio22.read()); // Toggle LED state
       });
@@ -160,16 +149,15 @@ class GpioService {
     _pollingTimer?.cancel();
     _flashTimer?.cancel();
 
-    gpio5.write(false);
-    gpio6.write(false);
-    gpio22.write(false);
-    gpio27.write(false);
+    // Ensure all GPIOs are set to a safe state before disposing
+    for (var gpio in [gpio5, gpio6, gpio22, gpio27]) {
+      gpio.write(false);
+    }
 
-    gpio5.dispose();
-    gpio6.dispose();
-    gpio22.dispose();
-    gpio16.dispose();
-    gpio27.dispose();
+    // Dispose all GPIOs
+    for (var gpio in [gpio5, gpio6, gpio22, gpio16, gpio27]) {
+      gpio.dispose();
+    }
 
     debugPrint('GPIO resources released');
   }
