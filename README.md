@@ -10,6 +10,11 @@ Update and upgrade your Linux
 sudo apt update
 sudo apt upgrade
 ```
+- Install net-tools
+```
+sudo apt install net-tools -y
+```
+
 - Install Mosquitto on the Pi
 
 ```
