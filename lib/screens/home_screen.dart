@@ -4,7 +4,7 @@ import 'package:udemy_mqtt_demo/widgets/flash_toggle_switch.dart';
 import 'package:udemy_mqtt_demo/widgets/pwm_slider.dart';
 import 'package:udemy_mqtt_demo/widgets/pwm_toggle_switch.dart';
 import 'package:udemy_mqtt_demo/widgets/sensor_state_widget.dart';
-import 'package:udemy_mqtt_demo/widgets/timer_widget.dart';
+// import 'package:udemy_mqtt_demo/widgets/timer_widget.dart';
 import 'package:udemy_mqtt_demo/widgets/toggle_switch.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,9 +15,9 @@ class HomeScreen extends StatelessWidget {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Expanded(
-            child: TimerWidget(),
-          ),
+          // const Expanded(
+          //   child: TimerWidget(),
+          // ),
           const Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -47,6 +47,7 @@ class HomeScreen extends StatelessWidget {
                 ToggleSwitch(),
                 SizedBox(height: 20),
                 SensorStateWidget(),
+                SizedBox(height: 20),
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:udemy_mqtt_demo/bloc/cubits/flash_cubit/flash_cubit.dart';
 import 'package:udemy_mqtt_demo/bloc/cubits/pwm_cubit/pwm_cubit.dart';
 import 'package:udemy_mqtt_demo/bloc/cubits/sensor_cubit/sensor_cubit.dart';
@@ -17,6 +18,9 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables from the .env file.
+  await dotenv.load(fileName: "lib/.env");
 
   // Initialize services
   final pwmService = PwmService();
@@ -77,11 +81,16 @@ class MyApp extends StatelessWidget {
       create: (context) => dataRepository,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => PwmCubit(dataRepository, pwmService)),
-          BlocProvider(create: (context) => FlashCubit(dataRepository, gpioService)),
-          BlocProvider(create: (context) => TimerCubit(dataRepository, timerService)),
-          BlocProvider(create: (context) => SensorCubit(dataRepository, gpioService)),
-          BlocProvider(create: (context) => ToggleCubit(dataRepository, gpioService)),
+          BlocProvider(
+              create: (context) => PwmCubit(dataRepository, pwmService)),
+          BlocProvider(
+              create: (context) => FlashCubit(dataRepository, gpioService)),
+          BlocProvider(
+              create: (context) => TimerCubit(dataRepository, timerService)),
+          BlocProvider(
+              create: (context) => SensorCubit(dataRepository, gpioService)),
+          BlocProvider(
+              create: (context) => ToggleCubit(dataRepository, gpioService)),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

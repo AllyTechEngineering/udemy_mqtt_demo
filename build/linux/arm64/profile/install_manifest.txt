@@ -10,5 +10,6 @@
 /home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/profile/bundle/data/flutter_assets/FontManifest.json
 /home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/profile/bundle/data/flutter_assets/shaders/ink_sparkle.frag
 /home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/profile/bundle/data/flutter_assets/AssetManifest.bin
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/profile/bundle/data/flutter_assets/lib/.env
 /home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/profile/bundle/data/flutter_assets/version.json
 /home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/profile/bundle/lib/libapp.so

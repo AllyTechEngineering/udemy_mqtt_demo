@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:udemy_mqtt_demo/bloc/data_repository/data_repository.dart';
@@ -8,15 +9,18 @@ import '../models/device_state_model.dart';
 class MqttService {
   final String _broker = "192.168.1.202"; // Raspberry Pi IP
   final int _port = 1883;
-  final String _username = "allytech";
-  final String _password = "Happy2025?";
   final String _clientId = "flutter_client";
   final String _topic = "device/state";
+
+  late final String _username;
+  late final String _password;
 
   late MqttServerClient _client;
   final DataRepository _dataRepository;
 
   MqttService(this._dataRepository) {
+    _username = dotenv.env['MQTT_USERNAME'] ?? '';
+    _password = dotenv.env['MQTT_PASSWORD'] ?? '';
     _initializeClient();
   }
 
