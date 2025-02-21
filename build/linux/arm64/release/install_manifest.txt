@@ -1,0 +1,15 @@
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/udemy_led_demo
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/icudtl.dat
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/lib/libflutter_linux_gtk.so
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/lib/libscreen_retriever_linux_plugin.so
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/lib/libwindow_manager_plugin.so
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/AssetManifest.json
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/NOTICES.Z
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/FontManifest.json
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/AssetManifest.bin
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/lib/.env
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/data/flutter_assets/version.json
+/home/bob/Documents/udemy/udemy_mqtt_demo/build/linux/arm64/release/bundle/lib/libapp.so
