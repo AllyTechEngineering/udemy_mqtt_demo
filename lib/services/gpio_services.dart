@@ -105,9 +105,10 @@ class GpioService {
 
   // GPIO Output Control
   void newToggleDeviceState() {
+    // debugPrint('Toggling device state');
     final bool newState = !toggleDeviceState; // Toggle the state
     setState("toggleDeviceState", newState);
-    debugPrint('Toggle Switch State: $newState');
+    // debugPrint('Toggle Switch State: $newState');
     gpio5.write(newState);
   }
 
@@ -126,12 +127,14 @@ class GpioService {
   }
 
   void toggleFlashState() {
+    debugPrint('Toggling flash state');
     bool currentState = isFlashing;
     setState("isFlashing", !currentState);
     updateDeviceFlashRate(flashRate);
   }
 
   void updateDeviceFlashRate(int newFlashRate) {
+    debugPrint('Updating flash rate to $newFlashRate');
     flashRate = newFlashRate;
     _flashTimer?.cancel(); // Cancel any existing timer
 

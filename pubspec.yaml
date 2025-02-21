@@ -41,6 +41,7 @@ dependencies:
   dart_periphery: ^0.9.15
   window_manager: ^0.4.3
   mqtt_client: ^10.5.1
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:

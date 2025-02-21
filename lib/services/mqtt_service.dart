@@ -92,7 +92,7 @@ class MqttService {
     builder.addString(jsonState);
 
     _client.publishMessage(_topic, MqttQos.atLeastOnce, builder.payload!);
-    debugPrint("Published MQTT data: $jsonState");
+    // debugPrint("Published MQTT data: $jsonState");
   }
 
   void _onConnected() {

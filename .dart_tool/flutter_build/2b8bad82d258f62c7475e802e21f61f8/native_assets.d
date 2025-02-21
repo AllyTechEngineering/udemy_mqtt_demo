@@ -1,0 +1,1 @@
+ /home/bob/Documents/udemy/udemy_mqtt_demo/.dart_tool/flutter_build/2b8bad82d258f62c7475e802e21f61f8/native_assets.yaml: 
